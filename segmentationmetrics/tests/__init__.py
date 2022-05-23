@@ -1,1 +1,1 @@
-from . import test_metrics
+from . import test_metrics, test_surface_distance
