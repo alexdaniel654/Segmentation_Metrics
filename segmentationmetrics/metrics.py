@@ -6,7 +6,7 @@ from . import surface_distance as sd
 
 class SegmentationMetrics:
 
-    def __init__(self, prediction, truth, zoom):
+    def __init__(self, prediction, truth, zoom, percentile=95, symmetric=True):
         self.prediction = prediction > 0.5
         self.truth = truth > 0.5
         self.zoom = zoom
@@ -19,8 +19,8 @@ class SegmentationMetrics:
         self._surface_dist = sd.compute_surface_distances(self.prediction,
                                                           self.truth,
                                                           self.zoom)
-        self.mean_surface_distance = self._av_dist()
-        self.hausdorff_distance = self._hausdorff_dist(95)
+        self.mean_surface_distance = self._av_dist(symmetric)
+        self.hausdorff_distance = self._hausdorff_dist(percentile)
         self.true_volume = self._true_volume()
         self.predicted_volume = self._predicted_volume()
         self.volume_difference = self._volume_difference()
@@ -78,9 +78,13 @@ class SegmentationMetrics:
                 np.sum((self.truth == 0) & (self.prediction == 0))) / \
                self.truth.size
 
-    def _av_dist(self):
+    def _av_dist(self, symmetric=True):
         av_surf_dist = sd.compute_average_surface_distance(self._surface_dist)
-        return np.mean(av_surf_dist)
+        if symmetric:
+            msd = np.mean(av_surf_dist)
+        else:
+            msd = av_surf_dist
+        return msd
 
     def _hausdorff_dist(self, percentile=95):
         return sd.compute_robust_hausdorff(self._surface_dist, percentile)

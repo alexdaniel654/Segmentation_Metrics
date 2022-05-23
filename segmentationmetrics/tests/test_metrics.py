@@ -63,6 +63,16 @@ class TestSegmentationMetrics:
                                                'true_volume': 1912.319,
                                                'volume_difference': 231.3220},
                                               rel=1e-20, abs=1e-4)
+
+        # Confirm changing Hausdorff percentile and surface distance
+        # symmetry flags work as expected
+        sm = SegmentationMetrics(self.img_a, self.img_b, (1, 1, 1),
+                                 percentile=99, symmetric=False)
+        assert np.isclose(sm.hausdorff_distance, 9.2736, rtol=1e-20, atol=1e-4)
+        assert np.isclose(sm.mean_surface_distance, (3.7923, 3.5430),
+                          rtol=1e-20, atol=1e-4).all()
+
+        # Verify dataframe is returned
         assert type(sm.get_df()) == pd.DataFrame
 
         # Overlapping spheres, non-isotropic voxels
