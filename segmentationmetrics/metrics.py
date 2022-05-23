@@ -35,8 +35,8 @@ class SegmentationMetrics:
                 'mean_surface_distance': self.mean_surface_distance,
                 'hausdorff_distance': self.hausdorff_distance,
                 'volume_difference': self.volume_difference,
-                'true_tkv': self.true_volume,
-                'predicted_tkv': self.predicted_volume}
+                'true_volume': self.true_volume,
+                'predicted_volume': self.predicted_volume}
 
     def get_df(self):
         df = pd.DataFrame.from_dict(self.get_dict(),
@@ -45,7 +45,7 @@ class SegmentationMetrics:
         df['Metric'] = ['Dice', 'Jaccard', 'Sensitivity', 'Specificity',
                         'Precision', 'Accuracy', 'Mean Surface Distance',
                         'Hausdorff Distance', 'Volume Difference',
-                        'True TKV', 'Predicted TKV']
+                        'True Volume', 'Predicted Volume']
         df = df[['Metric', 'Score']]
         return df
 
