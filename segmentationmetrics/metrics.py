@@ -5,8 +5,59 @@ from . import surface_distance as sd
 
 
 class SegmentationMetrics:
-
+    """"
+    Attributes
+    ----------
+    dice : float
+        Dice similarity score.
+    jaccard : float
+        Jaccard similarity score.
+    sensitivity : float
+        Sensitivity/recall/true positive rate.
+    specificity : float
+        Specificity/selectivity/true negative rate.
+    precision : float
+        Precision/positive predictive value.
+    accuracy : float
+        Accuracy.
+    mean_surface_distance : float or tuple
+        The mean surface distance, defaults to symmetric.
+    hausdorff_distance : float
+        The robust Hausdorff distance, defaults to 95th percentile.
+    true_volume : float
+        The volume of the true mask (in milliliters)
+    predicted_volume : float
+        The volume of the predicted mask (in milliliters)
+    volume_difference : float
+        The difference between the true and predicted volumes (in 
+        milliliters). Positive values show the predicted volume is larger 
+        than the true volume, negative values show the true volume is larger
+        than the predicted volume.
+    """
     def __init__(self, prediction, truth, zoom, percentile=95, symmetric=True):
+        """
+        Initialises the SegmentationMetrics class instance.
+
+        Parameters
+        ----------
+        prediction : np.ndarray
+            An array of bools or ints (0 and 1) representing the predicted
+            mask.
+        truth : np.ndarray
+            An array of bools or ints (0 and 1) representing the ground truth
+            mask.
+        zoom : tuple
+            The length of each voxel dimension in millimeters.
+        percentile : int, default 95
+            The percentile of surface distances to define as the Hausdorff
+            distance.
+        symmetric : bool, default True
+            If true, the symmetric mean surface distance is calculated i.e.
+            the returned mean surface distance is the average of the means
+            surface distance from surface A to surface B and the mean
+            surface distance from surface B to surface A. If false, a tuple
+            is returned with both mean surface distances.
+        """
         self.prediction = prediction > 0.5
         self.truth = truth > 0.5
         self.zoom = zoom
@@ -26,6 +77,14 @@ class SegmentationMetrics:
         self.volume_difference = self._volume_difference()
 
     def get_dict(self):
+        """
+        Generate a dictionary of segmentation accuracy metrics.
+
+        Returns
+        -------
+        metrics : dict
+            Segmentation accuracy.
+        """
         return {'dice': self.dice,
                 'jaccard': self.jaccard,
                 'sensitivity': self.sensitivity,
@@ -39,6 +98,15 @@ class SegmentationMetrics:
                 'predicted_volume': self.predicted_volume}
 
     def get_df(self):
+        """
+        Generate a Pandas DataFrame containing the segmentation accuracy
+        metrics.
+
+        Returns
+        -------
+        df : pd.DataFrame
+            DataFrame with metric in one column and score in the next column.
+        """
         df = pd.DataFrame.from_dict(self.get_dict(),
                                     orient='index',
                                     columns=['Score'])

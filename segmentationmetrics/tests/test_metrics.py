@@ -48,7 +48,7 @@ class TestSegmentationMetrics:
           centre_c[2] - ball_c.shape[2] // 2:
           centre_c[2] + ball_c.shape[2] // 2 + 1] = ball_c
 
-    def test_a_b(self):
+    def test_basic_case(self):
         # Overlapping spheres, isotropic voxels
         sm = SegmentationMetrics(self.img_a, self.img_b, (1, 1, 1))
         assert sm.get_dict() == pytest.approx({'accuracy': 0.9810,
@@ -63,7 +63,10 @@ class TestSegmentationMetrics:
                                                'true_volume': 1912.319,
                                                'volume_difference': 231.3220},
                                               rel=1e-20, abs=1e-4)
+        # Verify dataframe is returned
+        assert type(sm.get_df()) == pd.DataFrame
 
+    def test_options(self):
         # Confirm changing Hausdorff percentile and surface distance
         # symmetry flags work as expected
         sm = SegmentationMetrics(self.img_a, self.img_b, (1, 1, 1),
@@ -72,9 +75,7 @@ class TestSegmentationMetrics:
         assert np.isclose(sm.mean_surface_distance, (3.7923, 3.5430),
                           rtol=1e-20, atol=1e-4).all()
 
-        # Verify dataframe is returned
-        assert type(sm.get_df()) == pd.DataFrame
-
+    def test_nonisotropic_voxels(self):
         # Overlapping spheres, non-isotropic voxels
         sm = SegmentationMetrics(self.img_a[..., ::2], self.img_b[..., ::2],
                                  (1, 1, 2))
@@ -91,7 +92,23 @@ class TestSegmentationMetrics:
                                                'volume_difference': 229.4400},
                                               rel=1e-20, abs=1e-4)
 
-    def test_a_c(self):
+    def test_2d(self):
+        sm = SegmentationMetrics(self.img_a[..., 128], self.img_b[..., 128],
+                                 (1, 1))
+        assert sm.get_dict() == pytest.approx({'accuracy': 0.9688,
+                                               'dice': 0.9470,
+                                               'hausdorff_distance': 8.4853,
+                                               'jaccard': 0.8993,
+                                               'mean_surface_distance': 3.8745,
+                                               'precision': 0.9110,
+                                               'predicted_volume': 20.081,
+                                               'sensitivity': 0.9860,
+                                               'specificity': 0.9619,
+                                               'true_volume': 18.553,
+                                               'volume_difference': 1.5280},
+                                              rel=1e-20, abs=1e-4)
+
+    def test_no_overlap(self):
         # Non-overlapping spheres
         sm = SegmentationMetrics(self.img_a, self.img_c, (1, 1, 1))
         assert sm.get_dict() == pytest.approx({'accuracy': 0.8563,
