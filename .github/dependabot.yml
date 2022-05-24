@@ -1,0 +1,14 @@
+version: 2
+updates:
+- package-ecosystem: pip
+  directory: "/"
+  target-branch: "dev"
+  schedule:
+    interval: daily
+    time: "04:00"
+    timezone: Europe/London
+  open-pull-requests-limit: 10
+  assignees:
+  - alexdaniel654
+  labels:
+  - dependencies
