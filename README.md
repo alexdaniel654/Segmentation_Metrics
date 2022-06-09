@@ -2,6 +2,7 @@
 [![Python CI](https://github.com/alexdaniel654/Segmentation_Metrics/actions/workflows/python_ci.yml/badge.svg)](https://github.com/alexdaniel654/Segmentation_Metrics/actions/workflows/python_ci.yml) 
 [![PyPI version](https://badge.fury.io/py/segmentationmetrics.svg)](https://badge.fury.io/py/segmentationmetrics)
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+[![DOI](https://zenodo.org/badge/494534661.svg)](https://zenodo.org/badge/latestdoi/494534661)
 ### Volumetric binary mask segmentation accuracy metrics
 
 A small package for assessing the accuracy of binary segmentations. There are lots of metrics that can be used to compare how close two segmentations are, here voxel overlap, surface and volume based metrics are all calculated at once and returned either as individual metrics, a dictionary or a Pandas DataFrame.

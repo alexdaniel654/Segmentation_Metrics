@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.0.0] - 2022-06-09
+
+### Added
+* Zenodo DOI
+* Citation file
+
+### Changed
+* Bump to production version i.e. v1
+
+### Fixed
+* A load of dependency updates
+
 ## [0.1.1] - 2022-05-24
 
 ### Added
