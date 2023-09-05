@@ -81,16 +81,16 @@ class SurfaceDistanceTest(parameterized.TestCase, absltest.TestCase):
         places=places)
 
   @parameterized.parameters((
-      np.zeros([2, 2, 2], dtype=np.bool),
-      np.zeros([2, 2], dtype=np.bool),
+      np.zeros([2, 2, 2], dtype=bool),
+      np.zeros([2, 2], dtype=bool),
       [1, 1],
   ), (
-      np.zeros([2, 2], dtype=np.bool),
-      np.zeros([2, 2, 2], dtype=np.bool),
+      np.zeros([2, 2], dtype=bool),
+      np.zeros([2, 2, 2], dtype=bool),
       [1, 1],
   ), (
-      np.zeros([2, 2], dtype=np.bool),
-      np.zeros([2, 2], dtype=np.bool),
+      np.zeros([2, 2], dtype=bool),
+      np.zeros([2, 2], dtype=bool),
       [1, 1, 1],
   ))
   def test_compute_surface_distances_raises_on_incompatible_shapes(
@@ -100,12 +100,12 @@ class SurfaceDistanceTest(parameterized.TestCase, absltest.TestCase):
       surface_distance.compute_surface_distances(mask_gt, mask_pred, spacing_mm)
 
   @parameterized.parameters((
-      np.zeros([2], dtype=np.bool),
-      np.zeros([2], dtype=np.bool),
+      np.zeros([2], dtype=bool),
+      np.zeros([2], dtype=bool),
       [1],
   ), (
-      np.zeros([2, 2, 2, 2], dtype=np.bool),
-      np.zeros([2, 2, 2, 2], dtype=np.bool),
+      np.zeros([2, 2, 2, 2], dtype=bool),
+      np.zeros([2, 2, 2, 2], dtype=bool),
       [1, 1, 1, 1],
   ))
   def test_compute_surface_distances_raises_on_invalid_shapes(
@@ -118,8 +118,8 @@ class SurfaceDistanceTest(parameterized.TestCase, absltest.TestCase):
 class SurfaceDistance2DTest(SurfaceDistanceTest, parameterized.TestCase):
 
   def test_on_2_pixels_2mm_away(self):
-    mask_gt = np.zeros((128, 128), np.bool)
-    mask_pred = np.zeros((128, 128), np.bool)
+    mask_gt = np.zeros((128, 128), bool)
+    mask_pred = np.zeros((128, 128), bool)
     mask_gt[50, 70] = 1
     mask_pred[50, 72] = 1
     surface_distances = surface_distance.compute_surface_distances(
@@ -160,7 +160,7 @@ class SurfaceDistance2DTest(SurfaceDistanceTest, parameterized.TestCase):
             [0, 0, 0, 0, 0, 0],
             [0, 0, 0, 0, 0, 0],
         ],
-        dtype=np.bool)
+        dtype=bool)
 
     mask_pred = np.asarray(
         [
@@ -171,7 +171,7 @@ class SurfaceDistance2DTest(SurfaceDistanceTest, parameterized.TestCase):
             [0, 0, 0, 0, 0, 0],
             [0, 0, 0, 0, 0, 0],
         ],
-        dtype=np.bool)
+        dtype=bool)
 
     vertical = 2
     horizontal = 1
@@ -236,8 +236,8 @@ class SurfaceDistance2DTest(SurfaceDistanceTest, parameterized.TestCase):
             mask_gt, mask_pred)))
 
   def test_empty_prediction_mask(self):
-    mask_gt = np.zeros((128, 128), np.bool)
-    mask_pred = np.zeros((128, 128), np.bool)
+    mask_gt = np.zeros((128, 128), bool)
+    mask_pred = np.zeros((128, 128), bool)
     mask_gt[50, 60] = 1
     surface_distances = surface_distance.compute_surface_distances(
         mask_gt, mask_pred, spacing_mm=(3, 2))
@@ -253,8 +253,8 @@ class SurfaceDistance2DTest(SurfaceDistanceTest, parameterized.TestCase):
         expected_volumetric_dice=0.0)
 
   def test_empty_ground_truth_mask(self):
-    mask_gt = np.zeros((128, 128), np.bool)
-    mask_pred = np.zeros((128, 128), np.bool)
+    mask_gt = np.zeros((128, 128), bool)
+    mask_pred = np.zeros((128, 128), bool)
     mask_pred[50, 60] = 1
     surface_distances = surface_distance.compute_surface_distances(
         mask_gt, mask_pred, spacing_mm=(3, 2))
@@ -270,8 +270,8 @@ class SurfaceDistance2DTest(SurfaceDistanceTest, parameterized.TestCase):
         expected_volumetric_dice=0.0)
 
   def test_both_empty_masks(self):
-    mask_gt = np.zeros((128, 128), np.bool)
-    mask_pred = np.zeros((128, 128), np.bool)
+    mask_gt = np.zeros((128, 128), bool)
+    mask_pred = np.zeros((128, 128), bool)
     surface_distances = surface_distance.compute_surface_distances(
         mask_gt, mask_pred, spacing_mm=(3, 2))
     self._assert_metrics(
@@ -289,8 +289,8 @@ class SurfaceDistance2DTest(SurfaceDistanceTest, parameterized.TestCase):
 class SurfaceDistance3DTest(SurfaceDistanceTest):
 
   def test_on_2_pixels_2mm_away(self):
-    mask_gt = np.zeros((128, 128, 128), np.bool)
-    mask_pred = np.zeros((128, 128, 128), np.bool)
+    mask_gt = np.zeros((128, 128, 128), bool)
+    mask_pred = np.zeros((128, 128, 128), bool)
     mask_gt[50, 60, 70] = 1
     mask_pred[50, 60, 72] = 1
     surface_distances = surface_distance.compute_surface_distances(
@@ -304,8 +304,8 @@ class SurfaceDistance3DTest(SurfaceDistanceTest):
                          expected_volumetric_dice=0.0)
 
   def test_two_cubes_shifted_by_one_pixel(self):
-    mask_gt = np.zeros((100, 100, 100), np.bool)
-    mask_pred = np.zeros((100, 100, 100), np.bool)
+    mask_gt = np.zeros((100, 100, 100), bool)
+    mask_pred = np.zeros((100, 100, 100), bool)
     mask_gt[0:50, :, :] = 1
     mask_pred[0:51, :, :] = 1
     surface_distances = surface_distance.compute_surface_distances(
@@ -320,8 +320,8 @@ class SurfaceDistance3DTest(SurfaceDistanceTest):
         expected_volumetric_dice=0.990)
 
   def test_empty_prediction_mask(self):
-    mask_gt = np.zeros((128, 128, 128), np.bool)
-    mask_pred = np.zeros((128, 128, 128), np.bool)
+    mask_gt = np.zeros((128, 128, 128), bool)
+    mask_pred = np.zeros((128, 128, 128), bool)
     mask_gt[50, 60, 70] = 1
     surface_distances = surface_distance.compute_surface_distances(
         mask_gt, mask_pred, spacing_mm=(3, 2, 1))
@@ -335,8 +335,8 @@ class SurfaceDistance3DTest(SurfaceDistanceTest):
         expected_volumetric_dice=0.0)
 
   def test_empty_ground_truth_mask(self):
-    mask_gt = np.zeros((128, 128, 128), np.bool)
-    mask_pred = np.zeros((128, 128, 128), np.bool)
+    mask_gt = np.zeros((128, 128, 128), bool)
+    mask_pred = np.zeros((128, 128, 128), bool)
     mask_pred[50, 60, 72] = 1
     surface_distances = surface_distance.compute_surface_distances(
         mask_gt, mask_pred, spacing_mm=(3, 2, 1))
@@ -350,8 +350,8 @@ class SurfaceDistance3DTest(SurfaceDistanceTest):
         expected_volumetric_dice=0.0)
 
   def test_both_empty_masks(self):
-    mask_gt = np.zeros((128, 128, 128), np.bool)
-    mask_pred = np.zeros((128, 128, 128), np.bool)
+    mask_gt = np.zeros((128, 128, 128), bool)
+    mask_pred = np.zeros((128, 128, 128), bool)
     surface_distances = surface_distance.compute_surface_distances(
         mask_gt, mask_pred, spacing_mm=(3, 2, 1))
     self._assert_metrics(
