@@ -17,7 +17,7 @@ setup(
     url="https://github.com/alexdaniel654/Segmentation_Metrics",
     license="Apache-2.0",
 
-    python_requires='>=3.8, <4',
+    python_requires='>=3.9, <4',
     packages=find_packages(),
     install_requires=requirements,
     include_package_data=True,
@@ -29,9 +29,9 @@ setup(
         'Topic :: Scientific/Engineering',
         'Environment :: Console',
         'Operating System :: OS Independent',
-        'Programming Language :: Python :: 3.8',
         'Programming Language :: Python :: 3.9',
         'Programming Language :: Python :: 3.10',
+        'Programming Language :: Python :: 3.11',
         'License :: OSI Approved :: Apache Software License',
     ],
 )
