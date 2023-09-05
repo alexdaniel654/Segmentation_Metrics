@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.0.1] - 2023-09-05
+
+### Fixed
+* A lot of dependency updates
+* Patched away from the security issue with scipy 1.10.0
+
 ## [1.0.0] - 2022-06-09
 
 ### Added
