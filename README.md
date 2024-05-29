@@ -4,8 +4,9 @@
 [![Downloads](https://static.pepy.tech/badge/segmentationmetrics)](https://pepy.tech/project/segmentationmetrics)
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![DOI](https://zenodo.org/badge/494534661.svg)](https://zenodo.org/badge/latestdoi/494534661)
-### Volumetric binary mask segmentation accuracy metrics
+Volumetric binary mask segmentation accuracy metrics
 
+## Scope
 A small package for assessing the accuracy of binary segmentations. There are lots of metrics that can be used to compare how close two segmentations are, here voxel overlap, surface and volume based metrics are all calculated at once and returned either as individual metrics, a dictionary or a Pandas DataFrame.
 
 The surface based metrics in this package are calculated using code from [deepmind's surface-distance](https://github.com/deepmind/surface-distance) repository, however as this is not available as a PyPI package, the code has been included as a submodule here.
