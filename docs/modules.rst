@@ -5,3 +5,4 @@ Segmentation_Metrics
    :maxdepth: 4
 
    segmentationmetrics
+   setup

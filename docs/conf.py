@@ -27,13 +27,14 @@ release = '1.0.1'
 extensions = ['sphinx.ext.napoleon',
               'sphinx.ext.viewcode',
               'sphinx.ext.autodoc',
+              'sphinx.ext.autosummary',
               'sphinx.ext.todo',
               'myst_parser']
 
 templates_path = ['_templates']
 exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
-autosummary_mock_imports = ['segmentationmetrics.surface_distance',
-                            'tests']
+
+napoleon_include_init_with_doc = True
 
 # -- Options for HTML output -------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output
