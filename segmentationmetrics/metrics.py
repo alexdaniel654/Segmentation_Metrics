@@ -5,7 +5,7 @@ from . import surface_distance as sd
 
 
 class SegmentationMetrics:
-    """"
+    """
     Attributes
     ----------
     dice : float
