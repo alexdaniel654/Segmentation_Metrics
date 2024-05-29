@@ -1,6 +1,6 @@
 absl-py==1.4.0
 numpy==1.26.3
 pandas==2.2.2
-pytest==8.2.0
+pytest==8.2.1
 scikit-image==0.21.0
 scipy==1.13.1
