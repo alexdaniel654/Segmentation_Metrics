@@ -3,4 +3,4 @@ numpy==1.26.3
 pandas==2.2.2
 pytest==8.2.0
 scikit-image==0.21.0
-scipy==1.11.3
+scipy==1.13.1
