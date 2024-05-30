@@ -1,6 +1,6 @@
 # Segmentation Metrics
 [![Python CI](https://github.com/alexdaniel654/Segmentation_Metrics/actions/workflows/python_ci.yml/badge.svg)](https://github.com/alexdaniel654/Segmentation_Metrics/actions/workflows/python_ci.yml) 
-[![Documentation Status](https://readthedocs.org/projects/segmentationmetrics/badge/?version=stable)](https://segmentationmetrics.readthedocs.io/en/stable/?badge=stable)
+[![Documentation Status](https://readthedocs.org/projects/segmentationmetrics/badge/?version=latest)](https://segmentationmetrics.readthedocs.io/en/latest/?badge=latest)
 [![PyPI version](https://badge.fury.io/py/segmentationmetrics.svg)](https://badge.fury.io/py/segmentationmetrics)
 [![Downloads](https://static.pepy.tech/badge/segmentationmetrics)](https://pepy.tech/project/segmentationmetrics)
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
