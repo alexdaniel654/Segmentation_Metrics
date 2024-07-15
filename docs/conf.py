@@ -18,8 +18,8 @@ readme_path = '../README.md'
 
 project = 'Segmentation Metrics'
 copyright = f'{datetime.now().year}, Alex Daniel'
-author = 'Alex Daniel'
-release = '1.0.1'
+author = 'Alexander J Daniel'
+release = '1.1.0'
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration

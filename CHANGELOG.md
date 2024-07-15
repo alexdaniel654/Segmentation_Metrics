@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.1.0] - 2024-07-15
+
+### Added
+* Proper readthedocs documentation
+
+### Fixed
+* A lot of dependency updates
+
 ## [1.0.1] - 2023-09-05
 
 ### Fixed
