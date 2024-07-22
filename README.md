@@ -2,7 +2,9 @@
 [![Python CI](https://github.com/alexdaniel654/Segmentation_Metrics/actions/workflows/python_ci.yml/badge.svg)](https://github.com/alexdaniel654/Segmentation_Metrics/actions/workflows/python_ci.yml) 
 [![Documentation Status](https://readthedocs.org/projects/segmentationmetrics/badge/?version=latest)](https://segmentationmetrics.readthedocs.io/en/latest/?badge=latest)
 [![PyPI version](https://badge.fury.io/py/segmentationmetrics.svg)](https://badge.fury.io/py/segmentationmetrics)
+[![Anaconda-Server Badge](https://anaconda.org/conda-forge/segmentationmetrics/badges/version.svg)](https://anaconda.org/conda-forge/segmentationmetrics)
 [![Downloads](https://static.pepy.tech/badge/segmentationmetrics)](https://pepy.tech/project/segmentationmetrics)
+[![Anaconda-Server Badge](https://anaconda.org/conda-forge/segmentationmetrics/badges/downloads.svg)](https://anaconda.org/conda-forge/segmentationmetrics)
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![DOI](https://zenodo.org/badge/494534661.svg)](https://zenodo.org/badge/latestdoi/494534661)
 
@@ -12,6 +14,22 @@ Volumetric binary mask segmentation accuracy metrics
 A small package for assessing the accuracy of binary segmentations. There are lots of metrics that can be used to compare how close two segmentations are, here voxel overlap, surface and volume based metrics are all calculated at once and returned either as individual metrics, a dictionary or a Pandas DataFrame.
 
 The surface based metrics in this package are calculated using code from [deepmind's surface-distance](https://github.com/deepmind/surface-distance) repository, however as this is not available as a PyPI package, the code has been included as a submodule here.
+
+## Installation
+Segmentation Metrics is available on PyPI and can be installed using `pip`:
+```bash
+pip install segmentationmetrics
+```
+or if you're a `conda` user:
+```bash
+conda install segmentationmetrics -c conda-forge
+```
+Alternatively, you can install from source:
+```bash
+git clone https://github.com/alexdaniel654/Segmentation_Metrics.git  
+cd Segmentation_Metrics
+pip install -e .
+```
 
 ## Calculated Metrics
 ### Voxel overlap based metrics
@@ -50,12 +68,15 @@ metrics = sm.SegmentationMetrics(mask_automatic, mask_manual, zoom)
 # Print the dice score
 print(f'The Dice score is {metrics.dice:.2f}')
 ```
+
 `The Dice score is 0.85`
+
 ```python
 # Get and print a DataFrame containing all the scores for this mask pair
 df = metrics.get_df()
 print(df)
 ```
+
 ```
                                       Metric       Score
 dice                                    Dice    0.844512
@@ -70,12 +91,14 @@ volume_difference          Volume Difference -107.212906
 true_volume                      True Volume  403.632624
 predicted_volume            Predicted Volume  296.419718
 ```
+
 ```python
 # As above but with asymmetric mean surface distance and Hausdorff distance defined by the 99th percentil rather than the 95th percentile.
 metrics = sm.SegmentationMetrics(mask_automatic, mask_manual, zoom, symmetric=False, percentile=99)
 df = metrics.get_df()
 print(df)
 ```
+
 ```
                                       Metric                                    Score
 dice                                    Dice                                 0.844512
