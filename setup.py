@@ -10,7 +10,7 @@ with open('README.md', encoding='utf-8') as f:
 
 setup(
     name="segmentationmetrics",
-    version="1.1.0",
+    version="1.1.1",
     description="Binary segmentation accuracy metrics",
     long_description=long_description,
     long_description_content_type="text/markdown",
@@ -32,6 +32,7 @@ setup(
         'Programming Language :: Python :: 3.9',
         'Programming Language :: Python :: 3.10',
         'Programming Language :: Python :: 3.11',
+        'Programming Language :: Python :: 3.12',
         'License :: OSI Approved :: Apache Software License',
     ],
 )
