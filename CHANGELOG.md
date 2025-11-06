@@ -1,4 +1,11 @@
 # Changelog
+## [1.1.2] - 2025-11-06
+### Added
+* Support for Python 3.13
+
+### Changed
+* Dependencies are no longer pinned to exact versions
+
 ## [1.1.1] - 2024-07-22
 ### Added
 * Segmentation Metrics is now available on conda-forge.
