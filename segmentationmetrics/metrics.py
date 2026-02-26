@@ -61,20 +61,58 @@ class SegmentationMetrics:
         self.prediction = prediction > 0.5
         self.truth = truth > 0.5
         self.zoom = zoom
-        self.dice = self._dice()
-        self.jaccard = self._jaccard()
-        self.sensitivity = self._sensitivity()
-        self.specificity = self._specificity()
-        self.precision = self._precision()
-        self.accuracy = self._accuracy()
-        self._surface_dist = sd.compute_surface_distances(self.prediction,
-                                                          self.truth,
-                                                          self.zoom)
-        self.mean_surface_distance = self._av_dist(symmetric)
-        self.hausdorff_distance = self._hausdorff_dist(percentile)
-        self.true_volume = self._true_volume()
-        self.predicted_volume = self._predicted_volume()
-        self.volume_difference = self._volume_difference()
+        self.labels = np.unique(self.truth[self.truth > 0])
+
+        if self.labels.size == 0:
+            self.dice = np.nan
+            self.jaccard = np.nan
+            self.sensitivity = np.nan
+            self.specificity = np.nan
+            self.precision = np.nan
+            self.accuracy = np.nan
+            self.mean_surface_distance = np.nan
+            self.hausdorff_distance = np.nan
+            self.true_volume = np.nan
+            self.predicted_volume = np.nan
+            self.volume_difference = np.nan
+        else:
+            dice_vals = [self._dice(label) for label in self.labels]
+            jaccard_vals = [self._jaccard(label) for label in self.labels]
+            sensitivity_vals = [self._sensitivity(label) for label in self.labels]
+            specificity_vals = [self._specificity(label) for label in self.labels]
+            precision_vals = [self._precision(label) for label in self.labels]
+            accuracy_vals = [self._accuracy(label) for label in self.labels]
+            mean_surface_distance_vals = []
+            hausdorff_distance_vals = []
+            for label in self.labels:
+                if np.sum(self.truth == label) == 0 or np.sum(self.prediction == label) == 0:
+                    # If there are no voxels of this label in either the truth or prediction, set surface distances to infinity
+                    mean_surface_distance_vals.append(np.nan)
+                    hausdorff_distance_vals.append(np.nan)
+                else:
+                    self._surface_dist = sd.compute_surface_distances(self.prediction == label,
+                                                                    self.truth == label,
+                                                                    self.zoom)
+                    mean_surface_distance_vals.append(self._av_dist(symmetric))
+                    hausdorff_distance_vals.append(self._hausdorff_dist(percentile))
+            
+            self.dice = np.mean(dice_vals)
+            self.jaccard = np.mean(jaccard_vals)
+            self.sensitivity = np.mean(sensitivity_vals)
+            self.specificity = np.mean(specificity_vals)
+            self.precision = np.mean(precision_vals)
+            self.accuracy = np.mean(accuracy_vals)
+            self.mean_surface_distance = np.mean(mean_surface_distance_vals, axis=0)
+            self.hausdorff_distance = np.mean(hausdorff_distance_vals)
+            self.true_volume = np.sum([self._true_volume(label) for label in self.labels])
+            self.predicted_volume = np.sum([self._predicted_volume(label) for label in self.labels])
+            if self.labels.size == 1:
+                self.volume_difference = self._volume_difference(self.labels[0])
+            else:
+                self.volume_difference = np.sum(np.abs([self._volume_difference(label) for label in self.labels]))
+            # self.true_volume = self._true_volume()
+            # self.predicted_volume = self._predicted_volume()
+            # self.volume_difference = self._volume_difference()
 
     def get_dict(self):
         """
@@ -117,34 +155,53 @@ class SegmentationMetrics:
         df = df[['Metric', 'Score']]
         return df
 
-    def _dice(self):
-        return np.sum(self.prediction[self.truth == 1]) * 2.0 / \
-               (np.sum(self.prediction) + np.sum(self.truth))
+    def _dice(self, label=1):
+        tp, fp, fn, tn = self._get_confusion_counts(label)
+        if tp + fp + fn == 0:
+            dice = 0.0
+        else:
+            dice = (2 * tp) / (2 * tp + fp + fn)
+        return dice
 
-    def _jaccard(self):
-        return np.sum(self.prediction[self.truth == 1]) / \
-               (np.sum(self.prediction[self.truth == 1]) +
-                np.sum(self.prediction != self.truth))
+    def _jaccard(self, label=1):
+        tp, fp, fn, tn = self._get_confusion_counts(label)
+        if tp + fp + fn == 0:
+            jaccard = 0.0
+        else:
+            jaccard = tp / (tp + fp + fn)
+        return jaccard
 
-    def _sensitivity(self):
-        return np.sum(self.prediction[self.truth == 1]) / \
-               (np.sum(self.prediction[self.truth == 1]) +
-                np.sum((self.truth == 1) & (self.prediction == 0)))
+    def _sensitivity(self, label=1):
+        tp, fp, fn, tn = self._get_confusion_counts(label)
+        if tp + fn == 0:
+            sensitivity = 0.0
+        else:
+            sensitivity = tp / (tp + fn)
+        return sensitivity
 
-    def _specificity(self):
-        return np.sum((self.truth == 0) & (self.prediction == 0)) / \
-               (np.sum((self.truth == 0) & (self.prediction == 0)) +
-                np.sum((self.truth == 0) & (self.prediction == 1)))
+    def _specificity(self, label=1):
+        tp, fp, fn, tn = self._get_confusion_counts(label)
+        if tn + fp == 0:
+            specificity = 0.0
+        else:
+            specificity = tn / (tn + fp)
+        return specificity
 
-    def _precision(self):
-        return np.sum(self.prediction[self.truth == 1]) / \
-               (np.sum(self.prediction[self.truth == 1]) +
-                np.sum((self.truth == 0) & (self.prediction == 1)))
+    def _precision(self, label=1):
+        tp, fp, fn, tn = self._get_confusion_counts(label)
+        if tp + fp == 0:
+            precision = 0.0
+        else:
+            precision = tp / (tp + fp)
+        return precision
 
-    def _accuracy(self):
-        return (np.sum(self.prediction[self.truth == 1]) +
-                np.sum((self.truth == 0) & (self.prediction == 0))) / \
-               self.truth.size
+    def _accuracy(self, label=1):
+        tp, fp, fn, tn = self._get_confusion_counts(label)
+        if tp + fp + fn + tn == 0:
+            accuracy = 0.0
+        else:
+            accuracy = (tp + tn) / (tp + fp + fn + tn)
+        return accuracy
 
     def _av_dist(self, symmetric=True):
         av_surf_dist = sd.compute_average_surface_distance(self._surface_dist)
@@ -157,11 +214,18 @@ class SegmentationMetrics:
     def _hausdorff_dist(self, percentile=95):
         return sd.compute_robust_hausdorff(self._surface_dist, percentile)
 
-    def _true_volume(self):
-        return np.sum(self.truth) * np.prod(self.zoom) / 1000
+    def _true_volume(self, label=1):
+        return np.sum(self.truth == label) * np.prod(self.zoom) / 1000
 
-    def _predicted_volume(self):
-        return np.sum(self.prediction) * np.prod(self.zoom) / 1000
+    def _predicted_volume(self, label=1):
+        return np.sum(self.prediction == label) * np.prod(self.zoom) / 1000
 
-    def _volume_difference(self):
-        return self.predicted_volume - self.true_volume
+    def _volume_difference(self, label=1):
+        return self._predicted_volume(label) - self._true_volume(label)
+    
+    def _get_confusion_counts(self, label):
+        tp = np.sum((self.prediction == label) & (self.truth == label))
+        fp = np.sum((self.prediction == label) & (self.truth != label))
+        fn = np.sum((self.prediction != label) & (self.truth == label))
+        tn = np.sum((self.prediction != label) & (self.truth != label))
+        return tp, fp, fn, tn
