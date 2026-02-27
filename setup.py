@@ -10,8 +10,8 @@ with open('README.md', encoding='utf-8') as f:
 
 setup(
     name="segmentationmetrics",
-    version="1.1.2",
-    description="Binary segmentation accuracy metrics",
+    version="1.2.0",
+    description="Segmentation accuracy metrics",
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/alexdaniel654/Segmentation_Metrics",
