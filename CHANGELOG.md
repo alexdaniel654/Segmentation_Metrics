@@ -1,4 +1,10 @@
 # Changelog
+
+# Changelog
+## [1.2.0] - 2026-02-27
+### Added
+* Support for multi-label segmentation masks #109
+  
 ## [1.1.2] - 2025-11-06
 ### Added
 * Support for Python 3.13

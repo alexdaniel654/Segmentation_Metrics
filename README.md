@@ -11,7 +11,9 @@
 Volumetric binary mask segmentation accuracy metrics
 
 ## Scope
-A small package for assessing the accuracy of binary segmentations. There are lots of metrics that can be used to compare how close two segmentations are, here voxel overlap, surface and volume based metrics are all calculated at once and returned either as individual metrics, a dictionary or a Pandas DataFrame.
+A small package for assessing the accuracy of binary and multi-label segmentations. There are lots of metrics that can be used to compare how close two segmentations are, here voxel overlap, surface and volume based metrics are all calculated at once and returned either as individual metrics, a dictionary or a Pandas DataFrame.
+
+This package supports multi-label segmentation masks, in which case the metrics are calculated for each label and then averaged across labels to give a single score for each metric. The volume based metrics are summed across labels rather than averaged. By default, a saftey limit of 10 labels is applied and an error is raised if more than 10 distinct labels are found (e.g. in image is input rather than a labeled mask). If your images have more than 10 labels, set `many_labels=True` when initialising the `SegmentationMetrics` object to bypass this check and allow all labels to be included in the metrics calculation.
 
 The surface based metrics in this package are calculated using code from [deepmind's surface-distance](https://github.com/deepmind/surface-distance) repository, however as this is not available as a PyPI package, the code has been included as a submodule here.
 
