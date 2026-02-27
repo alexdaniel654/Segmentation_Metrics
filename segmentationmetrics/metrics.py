@@ -10,29 +10,76 @@ class SegmentationMetrics:
     ----------
     dice : float
         Dice similarity score.
+        The dice score is a measure of the overlap between the predicted and true
+        masks. It is calculated as 2*TP / (2*TP + FP + FN).
+        If there are multiple labels, the dice score is the mean of the dice 
+        scores for each label.
     jaccard : float
         Jaccard similarity score.
+        The jaccard score is a measure of the overlap between the predicted and
+        true masks. It is calculated as TP / (TP + FP + FN).
+        If there are multiple labels, the jaccard score is the mean of the 
+        jaccard scores for each label.
     sensitivity : float
         Sensitivity/recall/true positive rate.
+        The sensitivity is the proportion of true positives that are correctly
+        identified. It is calculated as TP / (TP + FN).
+        If there are multiple labels, the sensitivity is the mean of the
+        sensitivities for each label.
     specificity : float
         Specificity/selectivity/true negative rate.
+        The specificity is the proportion of true negatives that are correctly
+        identified. It is calculated as TN / (TN + FP).
+        If there are multiple labels, the specificity is the mean of the
+        specificities for each label.
     precision : float
         Precision/positive predictive value.
+        The precision is the proportion of predicted positives that are true
+        positives. It is calculated as TP / (TP + FP).
+        If there are multiple labels, the precision is the mean of the
+        precisions for each label.
     accuracy : float
-        Accuracy.
+        Accuracy. 
+        The accuracy is the proportion of true results (both true positives and
+        true negatives) among the total number of cases examined. It is 
+        calculated as (TP + TN) / (TP + TN + FP + FN).
+        If there are multiple labels, the accuracy is the mean of the accuracies
+        for each label.
     mean_surface_distance : float or tuple
         The mean surface distance, defaults to symmetric.
+        The mean surface distance is the average distance between the surfaces 
+        of the predicted and true masks. If symmetric is True, the mean surface 
+        distance is the average of the mean surface distance from surface A to
+        surface B and the mean surface distance from surface B to surface A. If
+        symmetric is False, a tuple is returned with both mean surface 
+        distances.
+        If there are multiple labels, the mean surface distance is the mean of 
+        the mean surface distances for each label.
     hausdorff_distance : float
         The robust Hausdorff distance, defaults to 95th percentile.
+        The Hausdorff distance is the maximum distance of a set to the nearest
+        point in the other set. The robust Hausdorff distance is the distance at
+        a specified percentile of the distances from points on one surface to 
+        the other surface.
+        If there are multiple labels, the Hausdorff distance is the mean of the
+        Hausdorff distances for each label.
     true_volume : float
-        The volume of the true mask (in milliliters)
+        The volume of the true mask (in milliliters).
+        If there are multiple labels, the true volume is the sum of the true
+        volumes for each label.
     predicted_volume : float
         The volume of the predicted mask (in milliliters)
+        If there are multiple labels, the predicted volume is the sum of the
+        predicted volumes for each label.
     volume_difference : float
         The difference between the true and predicted volumes (in 
         milliliters). Positive values show the predicted volume is larger 
         than the true volume, negative values show the true volume is larger
         than the predicted volume.
+        If there are multiple labels, the volume difference is the sum of the 
+        absolute volume differences for each label, rather than the overall 
+        volume difference. This is to prevent positive and negative differences
+        cancelling each other out.
     """
     def __init__(self, prediction, truth, zoom, percentile=95, symmetric=True,
                  many_labels=False):
@@ -122,9 +169,6 @@ class SegmentationMetrics:
                 self.volume_difference = self._volume_difference(self.labels[0])
             else:
                 self.volume_difference = np.sum(np.abs([self._volume_difference(label) for label in self.labels]))
-            # self.true_volume = self._true_volume()
-            # self.predicted_volume = self._predicted_volume()
-            # self.volume_difference = self._volume_difference()
 
     def get_dict(self):
         """
