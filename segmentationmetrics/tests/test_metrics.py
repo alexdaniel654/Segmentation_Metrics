@@ -185,7 +185,6 @@ class TestSegmentationMetrics:
                     'specificity': 0.0,
                     'true_volume': 14633.575,
                     'volume_difference': -12489.9340}
-        print(sm.get_dict())
         assert_dict_approx(sm.get_dict(), expected, rel=1e-20, abs=1e-4)
 
     def test_no_labels(self):

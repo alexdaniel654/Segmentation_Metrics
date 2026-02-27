@@ -11,7 +11,7 @@
 Volumetric binary mask segmentation accuracy metrics
 
 ## Scope
-A small package for assessing the accuracy of binary segmentations. There are lots of metrics that can be used to compare how close two segmentations are, here voxel overlap, surface and volume based metrics are all calculated at once and returned either as individual metrics, a dictionary or a Pandas DataFrame.
+A small package for assessing the accuracy of binary and multi-label segmentations. There are lots of metrics that can be used to compare how close two segmentations are, here voxel overlap, surface and volume based metrics are all calculated at once and returned either as individual metrics, a dictionary or a Pandas DataFrame.
 
 This package supports multi-label segmentation masks, in which case the metrics are calculated for each label and then averaged across labels to give a single score for each metric. The volume based metrics are summed across labels rather than averaged.
 

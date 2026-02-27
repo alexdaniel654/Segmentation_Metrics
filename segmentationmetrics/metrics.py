@@ -107,7 +107,7 @@ class SegmentationMetrics:
             If false, an error is raised if there are more than 10 labels in
             either the prediction or true mask. This is to prevent accidentally 
             running the metrics on a non-binary mask (e.g. the image that was 
-            segmented). If ture, metrics are calculated and averaged across all
+            segmented). If true, metrics are calculated and averaged across all
             labels.
         """
         if prediction.dtype == 'float' and truth.dtype == 'float':
@@ -147,8 +147,8 @@ class SegmentationMetrics:
             mean_surface_distance_vals = []
             hausdorff_distance_vals = []
             for label in self.labels:
-                if (np.sum(self.truth == label) == 0) | (np.sum(self.prediction == label) == 0):
-                    # If there are no voxels of this label in either the truth or prediction, set surface distances to infinity
+                if (np.sum(self.truth == label) == 0) or (np.sum(self.prediction == label) == 0):
+                    # If there are no voxels of this label in either the truth or prediction, set surface distances to nan as they are not defined
                     mean_surface_distance_vals.append(np.nan)
                     hausdorff_distance_vals.append(np.nan)
                 else:
