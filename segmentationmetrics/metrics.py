@@ -110,7 +110,7 @@ class SegmentationMetrics:
             segmented). If true, metrics are calculated and averaged across all
             labels.
         """
-        if prediction.dtype == 'float' and truth.dtype == 'float':
+        if prediction.dtype == 'float' or truth.dtype == 'float':
             if prediction.max() <= 1 and truth.max() <= 1:
                 prediction = (prediction > 0.5).astype(int)
                 truth = (truth > 0.5).astype(int)
@@ -153,7 +153,7 @@ class SegmentationMetrics:
                         mean_surface_distance_vals.append(np.nan)
                     else:
                         mean_surface_distance_vals.append((np.nan, np.nan))
-                        
+
                     hausdorff_distance_vals.append(np.nan)
                 else:
                     self._surface_dist = sd.compute_surface_distances(self.prediction == label,

@@ -7,6 +7,7 @@ from skimage.morphology import ball
 
 
 def assert_dict_approx(actual, expected, rel=1e-20, abs=1e-4):
+    assert set(actual.keys()) == set(expected.keys())
     for k, v in expected.items():
         assert k in actual
         a = actual[k]
@@ -20,7 +21,7 @@ class TestSegmentationMetrics:
     # Generate three spherical masks, two that are similar and one that
     # doesn't overlap at all
     img_shape = (256, 256, 256)
-    canvas = np.zeros(img_shape)
+    canvas = np.zeros(img_shape, dtype=np.int8)
 
     # Base sphere
     centre_a = (128, 128, 128)
@@ -111,6 +112,24 @@ class TestSegmentationMetrics:
         assert_dict_approx(sm.get_dict(), expected, rel=1e-20, abs=1e-4)
         # Verify dataframe is returned
         assert type(sm.get_df()) == pd.DataFrame
+
+    def test_float_case(self):
+        # One image is a float array, checks these get thresholded.
+        img_b_float = self.img_b.astype(float)
+        img_b_float[img_b_float > 0.5] = 0.9
+        sm = SegmentationMetrics(self.img_a, img_b_float, (1, 1, 1))
+        expected = {'accuracy': 0.9810,
+                'dice': 0.9216,
+                'hausdorff_distance': 8.6023,
+                'jaccard': 0.8546,
+                'mean_surface_distance': 3.6676,
+                'precision': 0.8719,
+                'predicted_volume': 2143.641,
+                'sensitivity': 0.9773,
+                'specificity': 0.9815,
+                'true_volume': 1912.319,
+                'volume_difference': 231.3220}
+        assert_dict_approx(sm.get_dict(), expected, rel=1e-20, abs=1e-4)
 
     def test_options(self):
         # Confirm changing Hausdorff percentile and surface distance
