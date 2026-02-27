@@ -81,6 +81,18 @@ class TestSegmentationMetrics:
           centre_e[1] + ball_e.shape[1] // 2 + 1,
           centre_e[2] - ball_e.shape[2] // 2:
           centre_e[2] + ball_e.shape[2] // 2 + 1] += ball_e
+    
+    # Add a second label to img_a that doesn't overlap with the first label in img_a
+    centre_f = (10, 10, 10)
+    radius_f = 4
+    ball_f = ball(radius_f)
+    img_f = img_a.copy()
+    img_f[centre_f[0] - ball_f.shape[0] // 2:
+          centre_f[0] + ball_f.shape[0] // 2 + 1,
+          centre_f[1] - ball_f.shape[1] // 2:
+          centre_f[1] + ball_f.shape[1] // 2 + 1,
+          centre_f[2] - ball_f.shape[2] // 2:
+          centre_f[2] + ball_f.shape[2] // 2 + 1] += (ball_f * 2)
 
     def test_basic_case(self):
         # Overlapping spheres, isotropic voxels
@@ -209,6 +221,22 @@ class TestSegmentationMetrics:
                 'true_volume': 1912.319,
                 'volume_difference': 231.3220}
         assert_dict_approx(sm.get_dict(), expected, rel=1e-20, abs=1e-4)
+
+    def test_multilabel_labels_dont_overlap(self):
+        # Test where label 1 doesn't overlap with label 2 in the ground truth
+        sm = SegmentationMetrics(self.img_f, self.img_e, (1, 1, 1))
+        expected = {'accuracy': 0.9866,
+                'dice': 0.4520,
+                'hausdorff_distance': 147.6504,
+                'jaccard': 0.4124,
+                'mean_surface_distance': 124.8019,
+                'precision': 0.4207,
+                'predicted_volume': 2143.898,
+                'sensitivity': 0.4883,
+                'specificity': 0.9886,
+                'true_volume': 1912.319,
+                'volume_difference': 361.5990}
+        assert_dict_approx(sm.get_dict(), expected, rel=1e-20, abs=1e-4)    
         
     def test_multilabel_missing_label(self):
         # Test with multiple labels, but one label missing from the prediction
