@@ -221,6 +221,14 @@ class TestSegmentationMetrics:
                 'volume_difference': 231.3220}
         assert_dict_approx(sm.get_dict(), expected, rel=1e-20, abs=1e-4)
 
+    def test_multilabel_with_options(self):
+        # Test with multiple labels and non-default options
+        sm = SegmentationMetrics(self.img_d, self.img_e, (1, 1, 1), 
+                                 symmetric=False, percentile=99)
+        assert np.isclose(sm.hausdorff_distance, 37.4730, rtol=1e-20, atol=1e-4)
+        assert np.isclose(sm.mean_surface_distance, (12.9019,  8.9657),
+                          rtol=1e-20, atol=1e-4).all()
+
     def test_multilabel_labels_dont_overlap(self):
         # Test where label 1 doesn't overlap with label 2 in the ground truth
         sm = SegmentationMetrics(self.img_f, self.img_e, (1, 1, 1))
@@ -252,6 +260,16 @@ class TestSegmentationMetrics:
                     'true_volume': 1912.319,
                     'volume_difference': 361.8560}
         assert_dict_approx(sm.get_dict(), expected, rel=1e-20, abs=1e-4)
+
+    def test_multilabel_with_options_missing_label(self):
+        # Test with multiple labels, non-default options and one label missing 
+        # from the prediction
+        sm = SegmentationMetrics(self.img_a, self.img_e, (1, 1, 1), 
+                                 symmetric=False, percentile=99)
+        assert np.isnan(sm.hausdorff_distance)
+        msd_arr = np.array(sm.mean_surface_distance)
+        assert msd_arr.shape == (2,)  
+        assert np.all(np.isnan(msd_arr)) 
 
     def test_non_consecutive_labels(self):
         # Test with non-consecutive labels

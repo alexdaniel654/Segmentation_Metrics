@@ -149,7 +149,11 @@ class SegmentationMetrics:
             for label in self.labels:
                 if (np.sum(self.truth == label) == 0) or (np.sum(self.prediction == label) == 0):
                     # If there are no voxels of this label in either the truth or prediction, set surface distances to nan as they are not defined
-                    mean_surface_distance_vals.append(np.nan)
+                    if symmetric:
+                        mean_surface_distance_vals.append(np.nan)
+                    else:
+                        mean_surface_distance_vals.append((np.nan, np.nan))
+                        
                     hausdorff_distance_vals.append(np.nan)
                 else:
                     self._surface_dist = sd.compute_surface_distances(self.prediction == label,
