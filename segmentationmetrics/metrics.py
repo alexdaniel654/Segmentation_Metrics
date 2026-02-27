@@ -110,6 +110,10 @@ class SegmentationMetrics:
             segmented). If ture, metrics are calculated and averaged across all
             labels.
         """
+        if prediction.dtype == 'float' and truth.dtype == 'float':
+            if prediction.max() <= 1 and truth.max() <= 1:
+                prediction = (prediction > 0.5).astype(int)
+                truth = (truth > 0.5).astype(int)
         self.prediction = prediction
         self.truth = truth
         self.zoom = zoom
