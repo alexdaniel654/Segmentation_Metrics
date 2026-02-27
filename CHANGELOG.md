@@ -1,6 +1,4 @@
 # Changelog
-
-# Changelog
 ## [1.2.0] - 2026-02-27
 ### Added
 * Support for multi-label segmentation masks #109
