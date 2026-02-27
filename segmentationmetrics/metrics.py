@@ -34,18 +34,17 @@ class SegmentationMetrics:
         than the true volume, negative values show the true volume is larger
         than the predicted volume.
     """
-    def __init__(self, prediction, truth, zoom, percentile=95, symmetric=True):
+    def __init__(self, prediction, truth, zoom, percentile=95, symmetric=True,
+                 many_labels=False):
         """
         Initialises the SegmentationMetrics class instance.
 
         Parameters
         ----------
         prediction : np.ndarray
-            An array of bools or ints (0 and 1) representing the predicted
-            mask.
+            An array of bools or ints representing the predicted mask.
         truth : np.ndarray
-            An array of bools or ints (0 and 1) representing the ground truth
-            mask.
+            An array of bools or ints representing the ground truth mask.
         zoom : tuple
             The length of each voxel dimension in millimeters.
         percentile : int, default 95
@@ -57,11 +56,24 @@ class SegmentationMetrics:
             surface distance from surface A to surface B and the mean
             surface distance from surface B to surface A. If false, a tuple
             is returned with both mean surface distances.
+        many_labels : bool, default False
+            If false, an error is raised if there are more than 10 labels in
+            either the prediction or true mask. This is to prevent accidentally 
+            running the metrics on a non-binary mask (e.g. the image that was 
+            segmented). If ture, metrics are calculated and averaged across all
+            labels.
         """
-        self.prediction = prediction > 0.5
-        self.truth = truth > 0.5
+        self.prediction = prediction
+        self.truth = truth
         self.zoom = zoom
         self.labels = np.unique(self.truth[self.truth > 0])
+        prediction_labels = np.unique(self.prediction[self.prediction > 0])
+        if not many_labels:
+            if self.labels.size > 10 or prediction_labels.size > 10:
+                raise ValueError('More than 10 labels found in either the '
+                                 'prediction or truth. If you want to ' 
+                                 'calculate metrics for more than 10 labels, ' 
+                                 'set many_labels=True.')
 
         if self.labels.size == 0:
             self.dice = np.nan
@@ -85,7 +97,7 @@ class SegmentationMetrics:
             mean_surface_distance_vals = []
             hausdorff_distance_vals = []
             for label in self.labels:
-                if np.sum(self.truth == label) == 0 or np.sum(self.prediction == label) == 0:
+                if (np.sum(self.truth == label) == 0) | (np.sum(self.prediction == label) == 0):
                     # If there are no voxels of this label in either the truth or prediction, set surface distances to infinity
                     mean_surface_distance_vals.append(np.nan)
                     hausdorff_distance_vals.append(np.nan)
