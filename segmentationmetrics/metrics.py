@@ -113,14 +113,13 @@ class SegmentationMetrics:
         self.prediction = prediction
         self.truth = truth
         self.zoom = zoom
-        self.labels = np.unique(self.truth[self.truth > 0])
-        prediction_labels = np.unique(self.prediction[self.prediction > 0])
+        self.labels = np.unique(np.concatenate((prediction[prediction > 0], truth[truth > 0])))
         if not many_labels:
-            if self.labels.size > 10 or prediction_labels.size > 10:
-                raise ValueError('More than 10 labels found in either the '
-                                 'prediction or truth. If you want to ' 
-                                 'calculate metrics for more than 10 labels, ' 
-                                 'set many_labels=True.')
+            if self.labels.size > 10:
+                raise ValueError('More than 10 labels found in prediction '
+                                 'and/or truth. If you want to calculate '
+                                 'metrics for more than 10 labels, set '
+                                 'many_labels=True.')
 
         if self.labels.size == 0:
             self.dice = np.nan
