@@ -226,6 +226,26 @@ class TestSegmentationMetrics:
                     'volume_difference': 361.8560}
         assert_dict_approx(sm.get_dict(), expected, rel=1e-20, abs=1e-4)
 
+    def test_non_consecutive_labels(self):
+        # Test with non-consecutive labels
+        img_d = self.img_d.copy()
+        img_d[img_d == 2] = 3
+        img_e = self.img_e.copy()
+        img_e[img_e == 2] = 3
+        sm = SegmentationMetrics(img_d, img_e, (1, 1, 1))
+        expected = {'accuracy': 0.9817,
+                'dice': 0.5264,
+                'hausdorff_distance': 30.8881,
+                'jaccard': 0.4401,
+                'mean_surface_distance': 10.9338,
+                'precision': 0.4883,
+                'predicted_volume': 2143.641,
+                'sensitivity': 0.5799,
+                'specificity': 0.9862,
+                'true_volume': 1912.319,
+                'volume_difference': 231.3220}
+        assert_dict_approx(sm.get_dict(), expected, rel=1e-20, abs=1e-4)
+
     def test_many_labels_error(self):
         # Test that error is raised if more than 10 labels are present and
         # many_labels=False
